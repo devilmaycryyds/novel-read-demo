@@ -1,0 +1,31 @@
+{
+  "type": "wb-cube-comp-read",
+  "properties": {
+    "title": {
+      "type": "String",
+      "name": "小说名",
+      "value": ""
+    },
+    "content": {
+      "type": "File",
+      "name": "小说文件上传",
+      "value": "",
+      "description": "请上传.txt格式的文件"
+    },
+    "qrCode": {
+      "type": "Image",
+      "name": "微信二维码",
+      "value": ""
+    },
+    "wechat": {
+      "type": "String",
+      "name": "微信号",
+      "value": ""
+    },
+    "wxPos": {
+      "type": "Boolean",
+      "name": "是否吸顶展示微信",
+      "value": false
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "Module",
+  "properties": {
+    "padding": {
+      "type": "String",
+      "value": ""
+    }
+  }
+}

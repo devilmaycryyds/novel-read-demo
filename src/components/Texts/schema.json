@@ -1,0 +1,13 @@
+{
+  "type": "Texts",
+  "properties": {
+    "title": {
+      "type": "String",
+      "value": ""
+    },
+    "padding": {
+      "type": "String",
+      "value": ""
+    }
+  }
+}
