@@ -10,20 +10,20 @@
       @mouseup="endHandler"
       @touchstart="startHandler"
       @touchmove="moveHandler"
-      @touchend="endHandler">
+      @touchend.stop="endHandler">
         <article v-if="!configData.isVertical" class="article-content" v-html="chapterContent">
         </article>
         <template v-else>
           <article class="article-content" v-for="(item, index) in allChapter" :key="index" v-html="item">
           </article>
         </template>
-        <More ref="more" :data="data" v-show="novelContent" v-if="configData.isVertical || chapterList.length - 1 === currChapterIndex || (wechat && wxPos)"></More>
+        <More ref="more" :data="data" :showContent="novelContent && (configData.isVertical || chapterList.length - 1 === currChapterIndex || (wechat && wxPos))"></More>
       </div>
       <div class="page-footer" v-if="!configData.isVertical">
         {{currPage}}/{{totalPage}}
       </div>
     </div>
-    <div class="page-config" :class="{hide: hideConfig}">
+    <div class="page-config" @touchend.stop :class="{hide: hideConfig}">
       <div class="page-config-cover" @click.stop="toggleConfig"></div>
       <ArticleConfig v-show="!hideSetting" :configData="configData" @on-change="changeConfig" @on-file-change="readFile"/>
       <Catalogue ref="catalogue" :data="{list: catalogueList}" @on-select="selectItem" @on-more="checkMore"/>
@@ -92,7 +92,6 @@ export default {
   },
   methods: {
     startHandler(e) {
-      !this.configData.isVertical && e.preventDefault();
       let touchEl;
       if (e.touches) {
         touchEl = e.touches[0];
@@ -120,6 +119,7 @@ export default {
       }
       if (this.configData.isVertical) {
         if (touchEl.clientX === this.currClientX) {
+          e.preventDefault();
           let wrapHeight = this.$refs.wrap.offsetHeight;
           let blockHeight = wrapHeight / 3;
           if (touchEl.clientY < blockHeight) {
@@ -136,6 +136,7 @@ export default {
         } else if (touchEl.clientX < this.currClientX - 20) {
           this.changePage('next');
         } else if (touchEl.clientX === this.currClientX) {
+          e.preventDefault();
           let blockWidth = this.wrapWidth / 3;
           if (touchEl.clientX < blockWidth) {
             this.changePage('prev');
@@ -229,7 +230,7 @@ export default {
     },
     checkMore() {
       this.hideConfig = true;
-      this.$refs.more.copyHandler();
+      this.$refs.more.copy();
     },
     /** 读取本地文件 */
     readFile(file) {

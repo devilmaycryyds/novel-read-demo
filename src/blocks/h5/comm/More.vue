@@ -1,19 +1,19 @@
 <template>
   <div class="more">
-    <div class="more-qr-wrap" v-if="qrImg">
+    <div class="more-qr-wrap" v-if="qrImg && showContent">
       <img :src="qrImg" alt="">
     </div>
-    <div class="more-wx-wrap" :class="{sticky: wxPos}" v-if="wechat">
+    <div class="more-wx-wrap" :class="{sticky: wxPos}" v-if="wechat && showContent" @touchend="stopHandler" @mouseup="stopHandler">
       <p>微信号： <span>{{wechat}}</span></p>
       <span class="copy-btn" @touchstart.stop="copyHandler" @mousedown.stop="copyHandler">关注</span>
     </div>
-    <div class="popup" @touchstart.stop @mousedown.stop v-if="showPop">
+    <div class="popup" @touchstart="stopHandler" @mousedown="stopHandler" @touchend="stopHandler" @mouseup="stopHandler" v-if="showPop">
       <div class="popup-box">
         <div class="popup-header">{{errorMsg ? '提示' : '复制成功'}}</div>
         <p>{{errorMsg || '微信号复制成功，是否立即跳转至微信并搜索该微信号？'}}</p>
         <div class="popup-btn">
-          <span class="popup-btn-cancel" @click="showPop = false;">{{errorMsg ? '确定' : '取消'}}</span>
-          <span v-if="!errorMsg" class="popup-btn-ok" @click="wxHandler">确定</span>
+          <span class="popup-btn-cancel" @mousedown="showPop = false;" @touchstart="showPop = false;">{{errorMsg ? '确定' : '取消'}}</span>
+          <span v-if="!errorMsg" class="popup-btn-ok" @mousedown="wxHandler" @touchstart="wxHandler">确定</span>
         </div>
       </div>
     </div>
@@ -28,6 +28,9 @@ export default {
       default() {
         return {}
       }
+    },
+    showContent: {
+      default: false
     }
   },
   data() {
@@ -47,7 +50,12 @@ export default {
     clickHandler(index) {
       this.$emit('on-select', index)
     },
-    copyHandler() {
+    copyHandler(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.copy();
+    },
+    copy() {
       var e = document.createElement('textarea');
       e.value = this.wechat;
       document.body.appendChild(e);
@@ -68,6 +76,10 @@ export default {
         }
         document.body.removeChild(e)
       }
+    },
+    stopHandler(e) {
+      e.preventDefault();
+      e.stopPropagation();
     },
     wxHandler() {
       this.showPop = false;
@@ -90,6 +102,7 @@ export default {
 
 <style lang="scss" scoped>
 .more {
+  margin-bottom: 40px;
   &-qr {
     &-wrap {
       padding-top: 30px;
@@ -103,7 +116,6 @@ export default {
   &-wx {
     &-wrap {
       margin-top: 30px;
-      margin-bottom: 40px;
       text-align: center;
       &.sticky {
         position: absolute;
