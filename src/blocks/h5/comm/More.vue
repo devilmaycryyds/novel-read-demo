@@ -9,11 +9,11 @@
     </div>
     <div class="popup" @touchstart.stop @mousedown.stop v-if="showPop">
       <div class="popup-box">
-        <div class="popup-header">复制成功</div>
-        <p>微信号复制成功，是否立即跳转至微信并搜索该微信号？</p>
+        <div class="popup-header">{{errorMsg ? '提示' : '复制成功'}}</div>
+        <p>{{errorMsg || '微信号复制成功，是否立即跳转至微信并搜索该微信号？'}}</p>
         <div class="popup-btn">
-          <span class="popup-btn-cancel" @click="showPop = false;">取消</span>
-          <span class="popup-btn-ok" @click="wxHandler">确定</span>
+          <span class="popup-btn-cancel" @click="showPop = false;">{{errorMsg ? '确定' : '取消'}}</span>
+          <span v-if="!errorMsg" class="popup-btn-ok" @click="wxHandler">确定</span>
         </div>
       </div>
     </div>
@@ -33,7 +33,8 @@ export default {
   data() {
     return {
       isHide: true,
-      showPop: false
+      showPop: false,
+      errorMsg: ''
     }
   },
   methods: {
@@ -57,14 +58,15 @@ export default {
       try {
           result = document.execCommand('copy');
       } catch (n) {
-          alert('您当前环境不支持复制，请手动复制');
+          this.errorMsg = '您当前环境不支持复制，请手动复制';
       } finally {
-          document.body.removeChild(e)
         if (result) {
+          this.errorMsg = '';
           this.showPop = true;
         } else  {
-          alert('复制失败，请选择再次尝试或手动复制微信号');
+          this.errorMsg = '复制失败，请选择再次尝试或手动复制微信号';
         }
+        document.body.removeChild(e)
       }
     },
     wxHandler() {

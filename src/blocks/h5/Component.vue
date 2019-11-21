@@ -92,7 +92,7 @@ export default {
   },
   methods: {
     startHandler(e) {
-      e.preventDefault();
+      !this.configData.isVertical && e.preventDefault();
       let touchEl;
       if (e.touches) {
         touchEl = e.touches[0];
@@ -266,6 +266,8 @@ export default {
           this.novelContent = data.data.novel || '';
           this.novelHandler();
         }
+      }).catch(() => {
+
       })
     },
     novelHandler() {
@@ -301,9 +303,10 @@ export default {
     },
     data: {
       handler: function (val) {
-        if ((val.content || {}).value !== this.schema.originPath) {
-          this.getNovelByPath((val.content || {}).value);
-        } else if (this.schema.novelUrl) {
+        let filePath = (val.content || {}).value;
+        if (filePath && filePath !== this.schema.originPath) {
+          this.getNovelByPath(filePath);
+        } else if (!this.novelContent && this.schema.novelUrl) {
           this.getNovelById();
         }
       },
