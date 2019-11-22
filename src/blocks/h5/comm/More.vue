@@ -5,14 +5,14 @@
     </div>
     <div class="more-wx-wrap" :class="{sticky: wxPos}" v-if="wechat && showContent" @touchend="stopHandler" @mouseup="stopHandler">
       <p>微信号： <span>{{wechat}}</span></p>
-      <span class="copy-btn" @touchstart.stop="copyHandler" @mousedown.stop="copyHandler">关注</span>
+      <span class="copy-btn" @touchend.stop="copyHandler" @mouseup.stop="copyHandler">关注</span>
     </div>
     <div class="popup" @touchstart="stopHandler" @mousedown="stopHandler" @touchend="stopHandler" @mouseup="stopHandler" v-if="showPop">
       <div class="popup-box">
         <div class="popup-header">{{errorMsg ? '提示' : '复制成功'}}</div>
         <p>{{errorMsg || '微信号复制成功，是否立即跳转至微信并搜索该微信号？'}}</p>
         <div class="popup-btn">
-          <span class="popup-btn-cancel" @mousedown="showPop = false;" @touchstart="showPop = false;">{{errorMsg ? '确定' : '取消'}}</span>
+          <span class="popup-btn-cancel" :class="{blue: errorMsg}" @mousedown="showPop = false;" @touchstart="showPop = false;">{{errorMsg ? '确定' : '取消'}}</span>
           <span v-if="!errorMsg" class="popup-btn-ok" @mousedown="wxHandler" @touchstart="wxHandler">确定</span>
         </div>
       </div>
@@ -70,10 +70,10 @@ export default {
       } finally {
         if (result) {
           this.errorMsg = '';
-          this.showPop = true;
         } else  {
           this.errorMsg = '复制失败，请选择再次尝试或手动复制微信号';
         }
+        this.showPop = true;
         document.body.removeChild(e)
       }
     },
@@ -184,20 +184,24 @@ export default {
     font-weight: 700;
   }
   &-btn {
-    margin-top: 1em;
+    margin: 1em -20px -15px;
+    border-top: 1px solid #ddd;
+    display: flex;
     span {
-      display: inline-block;
-      width: 5em;
-      height: 2em;
-      line-height: 2em;
-      border: 1px solid;
-      border-radius: 4px;
+      flex: 1;
+      height: 3em;
+      line-height: 3em;
+      font-size: 16px;
     }
     &-cancel {
-
+      color: #666;
+      &.blue {
+        color: #2d8cf0;
+      }
     }
     &-ok {
-      margin-left: 1em;
+      border-left: 1px solid #ddd;
+      color: #2d8cf0;
     }
   }
 }

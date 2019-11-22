@@ -1,6 +1,6 @@
 {
   "name": "wb-cube-comp-read",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "main": "src/blocks/wb/index.js",
   "scripts": {
     "serve": "vue-cli-service serve",

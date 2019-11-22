@@ -5,7 +5,7 @@
       <div class="catalogue-list">
         <ul>
           <li v-for="(item, index) in data.list" :key="item" @click="clickHandler(index)">{{item}}</li>
-          <li class="more" v-if="data.list && data.list.length" @click="moreHandler">查看更多...</li>
+          <li class="more" v-if="data.wechat && data.list && data.list.length" @click="moreHandler">查看更多...</li>
         </ul>
       </div>
     </div>

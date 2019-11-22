@@ -26,7 +26,7 @@
     <div class="page-config" @touchend.stop :class="{hide: hideConfig}">
       <div class="page-config-cover" @click.stop="toggleConfig"></div>
       <ArticleConfig v-show="!hideSetting" :configData="configData" @on-change="changeConfig" @on-file-change="readFile"/>
-      <Catalogue ref="catalogue" :data="{list: catalogueList}" @on-select="selectItem" @on-more="checkMore"/>
+      <Catalogue ref="catalogue" :data="{list: catalogueList, wechat: wechat}" @on-select="selectItem" @on-more="checkMore"/>
       <div class="page-config-tab">
         <div @click="showCatalogue">目录</div>
         <div @click="toggleSetting">设置</div>
