@@ -10,7 +10,7 @@
       "type": "File",
       "name": "小说文件上传",
       "value": "",
-      "description": "请上传.txt格式的文件"
+      "description": "请上传小于100K的.txt格式文件"
     },
     "qrCode": {
       "type": "Image",

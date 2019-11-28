@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { wbadmt, CHEKA_REPORT } from "../constant.js";
 export default {
   props: {
     configData: {
@@ -82,20 +83,24 @@ export default {
       if (this.fontSize <= 12) return;
       this.fontSize -= 2;
       this.changeConfig();
+      wbadmt.send(CHEKA_REPORT.CONFIG_FONT_S);
     },
     increaseSize() {
       if (this.fontSize >= 40) return;
       this.fontSize += 2;
       this.changeConfig();
+      wbadmt.send(CHEKA_REPORT.CONFIG_FONT_L);
     },
     changeBackground(index) {
       this.colorIndex = index;
       this.changeConfig();
+      wbadmt.send(CHEKA_REPORT.CONFIG_BG);
     },
     changeSlide(isver) {
       if (this.isVertical === isver) return;
       this.isVertical = isver;
       this.changeConfig();
+      isver ? wbadmt.send(CHEKA_REPORT.CONFIG_V) : wbadmt.send(CHEKA_REPORT.CONFIG_H);
     },
     changeConfig() {
       let currColor = this.colorIndex >= 0 ? this.colorList[this.colorIndex] : this.configData;
@@ -113,7 +118,7 @@ export default {
   },
   watch: {
     config: {
-      handler: function (val, oldVal) {
+      handler: function (val) {
         this.fontSize = val.fontSize || 16;
         this.isVertical = val.isVertical;
       },

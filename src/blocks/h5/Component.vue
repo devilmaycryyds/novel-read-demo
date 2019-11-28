@@ -10,19 +10,21 @@
       @mouseup="endHandler"
       @touchstart="startHandler"
       @touchmove="moveHandler"
-      @touchend.stop="endHandler">
+      @touchend.stop="endHandler"
+      @scroll="scrollHandler">
         <article v-if="!configData.isVertical" class="article-content" v-html="chapterContent">
         </article>
         <template v-else>
           <article class="article-content" v-for="(item, index) in allChapter" :key="index" v-html="item">
           </article>
         </template>
-        <More ref="more" :data="data" :showContent="novelContent && (configData.isVertical || chapterList.length - 1 === currChapterIndex || (wechat && wxPos))"></More>
+        <More ref="more" :data="data" :showContent="novelContent && (configData.isVertical || chapterList.length - 1 === currChapterIndex)" :transType="1"></More>
       </div>
       <div class="page-footer" v-if="!configData.isVertical">
         {{currPage}}/{{totalPage}}
       </div>
     </div>
+    <More :data="data" :showContent="wechat" :isSticky="wxPos" :transType="2"></More>
     <div class="page-config" @touchend.stop :class="{hide: hideConfig}">
       <div class="page-config-cover" @click.stop="toggleConfig"></div>
       <ArticleConfig v-show="!hideSetting" :configData="configData" @on-change="changeConfig" @on-file-change="readFile"/>
@@ -40,7 +42,7 @@ import ArticleConfig from './comm/ArticleConfig'
 import Catalogue from './comm/Catalogue'
 import More from './comm/More'
 import {getNovelBySplit, getFileString} from './utils'
-import { baseUrl, STORAGE_KEY } from "./constant.js";
+import { baseUrl, STORAGE_KEY, wbadmt, CHEKA_REPORT } from "./constant.js";
 
 export default {
   components: {
@@ -76,7 +78,10 @@ export default {
         color: 'rgba(0,0,0,.85)',
         isVertical: true
       },
-      novelContent: ''
+      /** 文本内容 */
+      novelContent: '',
+      isMove: false,
+      qrShowReport: false
     }
   },
   mounted() {
@@ -100,8 +105,10 @@ export default {
       }
       this.currClientX = touchEl.clientX;
       this.currScroll = this.$refs.wrap.scrollLeft;
+      this.isMove = true;
     },
     moveHandler(e) {
+      if (!this.isMove) return;
       let touchEl;
       if (e.touches) {
         touchEl = e.touches[0];
@@ -149,7 +156,18 @@ export default {
           this.scrollHorizontal(this.currScroll);
         }
       }
+      this.isMove = false;
     },
+    scrollHandler(e) {
+      if (this.qrShowReport) return;
+
+      let moreEl = this.$refs.more;
+      if (e.target.scrollTop + document.body.offsetHeight - moreEl.offsetTop > moreEl.offsetHeight / 3 * 2) {
+        wbadmt.send(CHEKA_REPORT.QR_SHOW);
+        this.qrShowReport = true;
+      }
+    },
+    /** 左右翻页 */
     changePage(type) {
       let page = this.currPage;
       let chapterChange = false;
@@ -175,6 +193,7 @@ export default {
         this.scrollHorizontal((this.currPage - 1) * this.wrapWidth, !chapterChange);
       }
     },
+    /** 章节切换 */
     changeChapter(type) {
       let index = this.currChapterIndex;
       if (type === 'prev') {
@@ -186,6 +205,7 @@ export default {
       this.currChapterIndex = index < 0 ? 0 : (index > this.chapterList.length - 1 ? this.chapterList.length - 1 : (this.currPage = 1, index));
       return this.currChapterIndex === index;
     },
+    /** 水平滚动 */
     scrollHorizontal(num, isSmooth) {
       this.$refs.wrap.scrollTo({
         left: num < 0 ? 0 : (num > this.contentWidth ? this.contentWidth : num),
@@ -199,10 +219,12 @@ export default {
         this.totalPage = Math.round(this.contentWidth / this.wrapWidth);
       })
     },
+    /** 关闭设置 */
     toggleConfig() {
       this.hideConfig = true;
       this.hideSetting = true;
     },
+    /** 更改配置 */
     changeConfig(data) {
       this.configData = data;
       window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -215,6 +237,7 @@ export default {
     toggleSetting() {
       this.hideSetting = !this.hideSetting;
     },
+    /** 目录选择 */
     selectItem(index) {
       this.currChapterIndex = index + 1;
       if (this.configData.isVertical) {
@@ -223,14 +246,16 @@ export default {
         this.changePage(1);
       }
       this.toggleConfig();
+      wbadmt.send(CHEKA_REPORT.CATALOGUE);
     },
+    /** 上下翻页滚动至章节 */
     scrollToChapter(index) {
       let currTitleEl = this.$refs.wrap.querySelectorAll('.article-content h2')[index];
       currTitleEl && this.$refs.wrap.scrollTo(0, currTitleEl.offsetTop - (this.wechat && this.wxPos ? 50 : 0));
     },
     checkMore() {
       this.hideConfig = true;
-      this.$refs.more.copy();
+      this.$refs.more.copy(3);
     },
     /** 读取本地文件 */
     readFile(file) {
@@ -240,12 +265,13 @@ export default {
         this.catalogueList = novelData.title;
       })
     },
+    /** 上传文件获取/更新文本内容 */
     getNovelByPath(path) {
       let params = {
         url: path
       };
       if (this.schema.novelId) {
-        params.novelId = this.schema.novelId;
+        params.novel_id = this.schema.novelId;
       }
       this.$http.post(`${baseUrl}/business/novel-content`, params).then(res => {
         let data = res.data || {};
@@ -260,6 +286,7 @@ export default {
 
       })
     },
+    /** 根据id获取已解析的内容 */
     getNovelById() {
       this.$http.get(this.schema.novelUrl).then(res => {
         let data = res.data || {};
@@ -271,6 +298,7 @@ export default {
 
       })
     },
+    /** 格式化小说内容 */
     novelHandler() {
       let novelData = getNovelBySplit(this.novelContent);
       this.chapterList = novelData.list;
@@ -294,6 +322,7 @@ export default {
     wechat() {
       return (this.data.wechat || {}).value || '';
     },
+    /** 微信关注是否吸顶 */
     wxPos() {
       return (this.data.wxPos || {}).value || '';
     }
@@ -320,6 +349,19 @@ export default {
           this.scrollToChapter(this.currChapterIndex - 1);
         })
       }
+    },
+    currPage: {
+      handler: function (val) {
+        if (!this.qrShowReport &&
+        !this.isVertical && 
+        this.novelContent && 
+        this.currChapterIndex === this.chapterList.length - 1 &&
+        this.totalPage === val) {
+          wbadmt.send(CHEKA_REPORT.QR_SHOW);
+          this.qrShowReport = true;
+        }
+      },
+      immediate: true
     }
   }
 }
@@ -328,7 +370,7 @@ export default {
 <style lang="scss" scoped>
 .page {
   &-wrap {
-    min-height: 200px;
+    min-height: 400px;
   }
   &-main {
     position: absolute;

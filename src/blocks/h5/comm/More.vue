@@ -1,9 +1,9 @@
 <template>
-  <div class="more">
-    <div class="more-qr-wrap" v-if="qrImg && showContent">
+  <div class="more" :class="{sticky: isSticky}">
+    <div class="more-qr-wrap" v-if="qrImg && showContent && !isSticky">
       <img :src="qrImg" alt="">
     </div>
-    <div class="more-wx-wrap" :class="{sticky: wxPos}" v-if="wechat && showContent" @touchend="stopHandler" @mouseup="stopHandler">
+    <div class="more-wx-wrap" :class="{sticky: isSticky}" v-if="wechat && showContent" @touchend="stopHandler" @mouseup="stopHandler">
       <p>微信号： <span>{{wechat}}</span></p>
       <span class="copy-btn" @touchend.stop="copyHandler" @mouseup.stop="copyHandler">关注</span>
     </div>
@@ -12,7 +12,8 @@
         <div class="popup-header">{{errorMsg ? '提示' : '复制成功'}}</div>
         <p>{{errorMsg || '微信号复制成功，是否立即跳转至微信并搜索该微信号？'}}</p>
         <div class="popup-btn">
-          <span class="popup-btn-cancel" :class="{blue: errorMsg}" @mousedown="showPop = false;" @touchstart="showPop = false;">{{errorMsg ? '确定' : '取消'}}</span>
+          <span v-if="errorMsg" class="popup-btn-cancel blue" @mousedown="showPop = false;" @touchstart="showPop = false;">确定</span>
+          <span v-else class="popup-btn-cancel" @mousedown="cancelWx" @touchstart="cancelWx">取消</span>
           <span v-if="!errorMsg" class="popup-btn-ok" @mousedown="wxHandler" @touchstart="wxHandler">确定</span>
         </div>
       </div>
@@ -21,6 +22,8 @@
 </template>
 
 <script>
+import { wbadmt, CHEKA_REPORT } from "../constant.js";
+
 export default {
   props: {
     data: {
@@ -31,13 +34,20 @@ export default {
     },
     showContent: {
       default: false
+    },
+    isSticky: {
+      default: false
+    },
+    transType: {
+      type: Number
     }
   },
   data() {
     return {
       isHide: true,
       showPop: false,
-      errorMsg: ''
+      errorMsg: '',
+      tempTransType: 0
     }
   },
   methods: {
@@ -55,7 +65,12 @@ export default {
       e.stopPropagation();
       this.copy();
     },
-    copy() {
+    copy(tempTransType) {
+      this.tempTransType = tempTransType;
+      let typeCode = this.tempTransType || this.transType;
+      let arr = [0, CHEKA_REPORT.WX_COPY_BOTTOM, CHEKA_REPORT.WX_COPY_TOP, CHEKA_REPORT.WX_COPY_MORE];
+      arr[typeCode] && wbadmt.send(arr[typeCode]);
+
       var e = document.createElement('textarea');
       e.value = this.wechat;
       document.body.appendChild(e);
@@ -82,8 +97,19 @@ export default {
       e.stopPropagation();
     },
     wxHandler() {
+      let typeCode = this.tempTransType || this.transType;
+      let arr = [0, CHEKA_REPORT.WX_COPY_BOTTOM_OPEN, CHEKA_REPORT.WX_COPY_TOP_OPEN, CHEKA_REPORT.WX_COPY_MORE_OPEN];
+      arr[typeCode] && wbadmt.send(arr[typeCode]);
       this.showPop = false;
       window.location.href = 'weixin://';
+      this.tempTransType = 0;
+    },
+    cancelWx() {
+      let typeCode = this.tempTransType || this.transType;
+      let arr = [0, CHEKA_REPORT.WX_COPY_BOTTOM_CANCEL, CHEKA_REPORT.WX_COPY_TOP_CANCEL, CHEKA_REPORT.WX_COPY_MORE_CANCEL];
+      arr[typeCode] && wbadmt.send(arr[typeCode]);
+      this.showPop = false;
+      this.tempTransType = 0;
     }
   },
   computed: {
@@ -103,13 +129,16 @@ export default {
 <style lang="scss" scoped>
 .more {
   margin-bottom: 40px;
+  &.sticky {
+    margin-bottom: 0;
+  }
   &-qr {
     &-wrap {
       padding-top: 30px;
       text-align: center;
       img {
-        width: 50vw;
-        height: 50vw;
+        width: 50%;
+        height: 50%;
       }
     }
   }
