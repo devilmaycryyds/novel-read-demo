@@ -161,7 +161,7 @@ export default {
     scrollHandler(e) {
       if (this.qrShowReport) return;
 
-      let moreEl = this.$refs.more;
+      let moreEl = this.$refs.more.$el;
       if (e.target.scrollTop + document.body.offsetHeight - moreEl.offsetTop > moreEl.offsetHeight / 3 * 2) {
         wbadmt.send(CHEKA_REPORT.QR_SHOW);
         this.qrShowReport = true;

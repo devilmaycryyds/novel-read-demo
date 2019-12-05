@@ -4,7 +4,7 @@
       <img :src="qrImg" alt="">
     </div>
     <div class="more-wx-wrap" :class="{sticky: isSticky}" v-if="wechat && showContent" @touchend="stopHandler" @mouseup="stopHandler">
-      <p>微信号： <span>{{wechat}}</span></p>
+      <p><span>微信号：</span> <span class="more-wx-wechat">{{wechat}}</span></p>
       <span class="copy-btn" @touchend.stop="copyHandler" @mouseup.stop="copyHandler">关注</span>
     </div>
     <div class="popup" @touchstart="stopHandler" @mousedown="stopHandler" @touchend="stopHandler" @mouseup="stopHandler" v-if="showPop">
@@ -128,9 +128,9 @@ export default {
 
 <style lang="scss" scoped>
 .more {
-  margin-bottom: 40px;
+  padding-bottom: 40px;
   &.sticky {
-    margin-bottom: 0;
+    padding-bottom: 0;
   }
   &-qr {
     &-wrap {
@@ -165,6 +165,12 @@ export default {
       p,
       span {
         font-size: 16px;
+        &.more-wx-wechat {
+          font-size: 18px;
+        }
+      }
+      p {
+        color: #000;
       }
     }
   }
@@ -172,11 +178,14 @@ export default {
 .copy-btn {
   margin-top: 10px;
   display: inline-block;
-  width: 80px;
-  height: 30px;
-  line-height: 30px;
-  border: 1px solid;
-  border-radius: 15px;
+  width: 4.6em;
+  height: 1.9em;
+  line-height: 1.9em;
+  border: 1px solid #5ab55d;
+  border-radius: 6px;
+  color: #FFF;
+  font-weight: 500;
+  background-color: #5ab55d;
 }
 .popup {
   position: fixed;
