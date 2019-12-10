@@ -42,7 +42,7 @@ import ArticleConfig from './comm/ArticleConfig'
 import Catalogue from './comm/Catalogue'
 import More from './comm/More'
 import {getNovelBySplit, getFileString} from './utils'
-import { baseUrl, STORAGE_KEY, wbadmt, CHEKA_REPORT } from "./constant.js";
+import { baseUrl, STORAGE_KEY, wbadmt, chekaReport } from "./constant.js";
 
 export default {
   components: {
@@ -94,6 +94,8 @@ export default {
     this.wrapWidth = this.$refs.wrap.offsetWidth;
     this.contentWidth = this.$refs.wrap.scrollWidth;
     this.totalPage = Math.round(this.contentWidth / this.wrapWidth);
+
+    this.setEventId();
   },
   methods: {
     startHandler(e) {
@@ -163,7 +165,7 @@ export default {
 
       let moreEl = this.$refs.more.$el;
       if (e.target.scrollTop + document.body.offsetHeight - moreEl.offsetTop > moreEl.offsetHeight / 3 * 2) {
-        wbadmt.send(CHEKA_REPORT.QR_SHOW);
+        wbadmt.send(chekaReport.qrShow);
         this.qrShowReport = true;
       }
     },
@@ -246,7 +248,7 @@ export default {
         this.changePage(1);
       }
       this.toggleConfig();
-      wbadmt.send(CHEKA_REPORT.CATALOGUE);
+      wbadmt.send(chekaReport.catalogue);
     },
     /** 上下翻页滚动至章节 */
     scrollToChapter(index) {
@@ -303,6 +305,30 @@ export default {
       let novelData = getNovelBySplit(this.novelContent);
       this.chapterList = novelData.list;
       this.catalogueList = novelData.title;
+    },
+    setEventId() {
+      if (this.schema.event) {
+        Object.keys(chekaReport).forEach(key => {
+          chekaReport[key].eventid = this.schema.event[key];
+        })
+      } else {
+        if (this.getUrlParams('_id')) return;
+        this.schema.event = {};
+        Object.keys(chekaReport).forEach(key => {
+          this.$http.get(`${baseUrl}/common/event-id`).then(res => {
+            let data = res.data || {};
+            if (data.code === 0 && data.data) {
+              this.schema.event[key] = chekaReport[key].eventid = data.data;
+            }
+          }).catch(() => {
+
+          })
+        })
+      }
+    },
+    getUrlParams(name) {
+      let matchStr = location.search.match(new RegExp(`${name}=([^&$]*)`));
+      return matchStr ? matchStr[1] : '';
     }
   },
   computed: {
@@ -357,7 +383,7 @@ export default {
         this.novelContent && 
         this.currChapterIndex === this.chapterList.length - 1 &&
         this.totalPage === val) {
-          wbadmt.send(CHEKA_REPORT.QR_SHOW);
+          wbadmt.send(chekaReport.qrShow);
           this.qrShowReport = true;
         }
       },

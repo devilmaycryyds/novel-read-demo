@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { wbadmt, CHEKA_REPORT } from "../constant.js";
+import { wbadmt, chekaReport } from "../constant.js";
 
 export default {
   props: {
@@ -68,7 +68,7 @@ export default {
     copy(tempTransType) {
       this.tempTransType = tempTransType;
       let typeCode = this.tempTransType || this.transType;
-      let arr = [0, CHEKA_REPORT.WX_COPY_BOTTOM, CHEKA_REPORT.WX_COPY_TOP, CHEKA_REPORT.WX_COPY_MORE];
+      let arr = [0, chekaReport.wxCopyBottom, chekaReport.wxCopyTop, chekaReport.wxCopyMore];
       arr[typeCode] && wbadmt.send(arr[typeCode]);
 
       var e = document.createElement('textarea');
@@ -98,7 +98,7 @@ export default {
     },
     wxHandler() {
       let typeCode = this.tempTransType || this.transType;
-      let arr = [0, CHEKA_REPORT.WX_COPY_BOTTOM_OPEN, CHEKA_REPORT.WX_COPY_TOP_OPEN, CHEKA_REPORT.WX_COPY_MORE_OPEN];
+      let arr = [0, chekaReport.wxCopyBottomOpen, chekaReport.wxCopyTopOpen, chekaReport.wxCopyMoreOpen];
       arr[typeCode] && wbadmt.send(arr[typeCode]);
       this.showPop = false;
       window.location.href = 'weixin://';
@@ -106,7 +106,7 @@ export default {
     },
     cancelWx() {
       let typeCode = this.tempTransType || this.transType;
-      let arr = [0, CHEKA_REPORT.WX_COPY_BOTTOM_CANCEL, CHEKA_REPORT.WX_COPY_TOP_CANCEL, CHEKA_REPORT.WX_COPY_MORE_CANCEL];
+      let arr = [0, chekaReport.wxCopyBottomCancel, chekaReport.wxCopyTopCancel, chekaReport.wxCopyMoreCancel];
       arr[typeCode] && wbadmt.send(arr[typeCode]);
       this.showPop = false;
       this.tempTransType = 0;
@@ -176,7 +176,7 @@ export default {
   }
 }
 .copy-btn {
-  margin-top: 10px;
+  margin-top: 16px;
   display: inline-block;
   width: 4.6em;
   height: 1.9em;
