@@ -7,8 +7,6 @@ function mixExtra(type) {
 export const baseUrl = '//yingxiao.ad.weibo.com';
 export const STORAGE_KEY = 'WB_CUBE_READ_CONFIG';
 
-export let wbadmt = window.wbadmt || { send: () => {} };
-
 export let extra = window.extra || {};
 
 export let chekaReport = {

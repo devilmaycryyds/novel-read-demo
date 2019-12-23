@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { wbadmt, chekaReport } from "../constant.js";
+import { chekaReport } from "../constant.js";
 
 export default {
   props: {
@@ -69,7 +69,7 @@ export default {
       this.tempTransType = tempTransType;
       let typeCode = this.tempTransType || this.transType;
       let arr = [0, chekaReport.wxCopyBottom, chekaReport.wxCopyTop, chekaReport.wxCopyMore];
-      arr[typeCode] && wbadmt.send(arr[typeCode]);
+      arr[typeCode] && window.wbadmt.send(arr[typeCode]);
 
       var e = document.createElement('textarea');
       e.value = this.wechat;
@@ -99,7 +99,7 @@ export default {
     wxHandler() {
       let typeCode = this.tempTransType || this.transType;
       let arr = [0, chekaReport.wxCopyBottomOpen, chekaReport.wxCopyTopOpen, chekaReport.wxCopyMoreOpen];
-      arr[typeCode] && wbadmt.send(arr[typeCode]);
+      arr[typeCode] && window.wbadmt.send(arr[typeCode]);
       this.showPop = false;
       window.location.href = 'weixin://';
       this.tempTransType = 0;
@@ -107,7 +107,7 @@ export default {
     cancelWx() {
       let typeCode = this.tempTransType || this.transType;
       let arr = [0, chekaReport.wxCopyBottomCancel, chekaReport.wxCopyTopCancel, chekaReport.wxCopyMoreCancel];
-      arr[typeCode] && wbadmt.send(arr[typeCode]);
+      arr[typeCode] && window.wbadmt.send(arr[typeCode]);
       this.showPop = false;
       this.tempTransType = 0;
     }

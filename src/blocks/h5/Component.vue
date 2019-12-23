@@ -42,7 +42,7 @@ import ArticleConfig from './comm/ArticleConfig'
 import Catalogue from './comm/Catalogue'
 import More from './comm/More'
 import {getNovelBySplit, getFileString} from './utils'
-import { baseUrl, STORAGE_KEY, wbadmt, chekaReport } from "./constant.js";
+import { baseUrl, STORAGE_KEY, chekaReport } from "./constant.js";
 
 export default {
   components: {
@@ -85,6 +85,7 @@ export default {
     }
   },
   mounted() {
+    window.wbadmt = window.wbadmt || { send: () => {} };
     let storageConfig = window.sessionStorage.getItem(STORAGE_KEY);
     try {
       this.configData = Object.assign({}, this.configData, JSON.parse(storageConfig));
@@ -165,7 +166,7 @@ export default {
 
       let moreEl = this.$refs.more.$el;
       if (e.target.scrollTop + document.body.offsetHeight - moreEl.offsetTop > moreEl.offsetHeight / 3 * 2) {
-        wbadmt.send(chekaReport.qrShow);
+        window.wbadmt.send(chekaReport.qrShow);
         this.qrShowReport = true;
       }
     },
@@ -248,7 +249,7 @@ export default {
         this.changePage(1);
       }
       this.toggleConfig();
-      wbadmt.send(chekaReport.catalogue);
+      window.wbadmt.send(chekaReport.catalogue);
     },
     /** 上下翻页滚动至章节 */
     scrollToChapter(index) {
@@ -383,7 +384,7 @@ export default {
         this.novelContent && 
         this.currChapterIndex === this.chapterList.length - 1 &&
         this.totalPage === val) {
-          wbadmt.send(chekaReport.qrShow);
+          window.wbadmt.send(chekaReport.qrShow);
           this.qrShowReport = true;
         }
       },
