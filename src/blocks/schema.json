@@ -20,6 +20,17 @@
       "value": "",
       "canDelete": true
     },
+    "avator": {
+      "type": "Image",
+      "name": "图标显示",
+      "value": "",
+      "canDelete": true
+    },
+    "desc": {
+      "type": "RichText",
+      "name": "富文本描述",
+      "value": ""
+    },
     "wechat": {
       "type": "String",
       "name": "微信号",

@@ -4,7 +4,9 @@
       <img :src="qrImg" alt="">
     </div>
     <div class="more-wx-wrap" :class="{sticky: isSticky}" v-if="wechat && showContent" @touchend="stopHandler" @mouseup="stopHandler">
-      <p><span>微信号：</span> <span class="more-wx-wechat">{{wechat}}</span></p>
+      <img v-if="avator" class="more-wx-avator" :src="avator" alt="">
+      <div v-if="desc" v-html="desc" class="more-wx-rich"></div>
+      <p v-else><span>微信号：</span> <span class="more-wx-wechat">{{wechat}}</span></p>
       <span class="copy-btn" @touchend.stop="copyHandler" @mouseup.stop="copyHandler">关注</span>
     </div>
     <div class="popup" @touchstart="stopHandler" @mousedown="stopHandler" @touchend="stopHandler" @mouseup="stopHandler" v-if="showPop">
@@ -121,6 +123,12 @@ export default {
     },
     wxPos() {
       return (this.data.wxPos || {}).value || '';
+    },
+    avator() {
+      return (this.data.avator || {}).value || '';
+    },
+    desc() {
+      return (this.data.desc || {}).value || '';
     }
   }
 }
@@ -161,6 +169,9 @@ export default {
         .copy-btn {
           margin: 0;
         }
+        .more-wx-rich {
+          text-align: left;
+        }
       }
       p,
       span {
@@ -172,6 +183,16 @@ export default {
       p {
         color: #000;
       }
+    }
+    &-avator {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+    }
+    &-rich {
+      text-align: center;
+      flex: 1;
+      margin-left: 10px;
     }
   }
 }
