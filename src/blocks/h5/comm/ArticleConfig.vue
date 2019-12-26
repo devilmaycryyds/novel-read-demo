@@ -7,22 +7,24 @@
         <span @click="increaseSize" :class="{disabled: fontSize >= 40}">A+</span>
       </div>
     </div>
-    <div class="page-config-detail-item">
+    <!-- <div class="page-config-detail-item">
       <span class="page-config-detail-label">翻页</span>
       <div class="page-config-font">
         <span @click="changeSlide(false)" :class="{disabled: !isVertical}">左右滑动</span>
         <span @click="changeSlide(true)" :class="{disabled: isVertical}">上下滑动</span>
       </div>
-    </div>
+    </div> -->
     <div class="page-config-detail-item">
       <span class="page-config-detail-label">背景</span>
       <div class="page-config-background">
-        <span
-          v-for="(item, index) in colorList"
-          :key="item.name"
-          :style="`background-color:${item.background}`"
-          :class="{active: colorIndex === index}"
-          @click="changeBackground(index)"></span>
+        <div>
+          <span
+            v-for="(item, index) in colorList"
+            :key="item.name"
+            :style="`background-color:${item.background}`"
+            :class="{active: colorIndex === index}"
+            @click="changeBackground(index)"></span>
+        </div>
       </div>
     </div>
     <!-- <div class="page-config-detail-item">
@@ -171,9 +173,17 @@ export default {
     }
   }
   &-background {
-    display: flex;
     flex: 1;
+    overflow-x: auto;
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    > div {
+      white-space: nowrap;
+    }
     span {
+      display: inline-block;
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -182,7 +192,8 @@ export default {
         margin-left: 0;
       }
       &.active {
-        box-shadow: 0px 0px 18px #FFF;
+        box-shadow: 1px 1px 3px #FFF;
+        border: 1px solid #FFF;
       }
     }
   }
