@@ -70,40 +70,40 @@ export let chekaReport = {
     eventtype: '',
     eventvalue: mixExtra('bottom_show_qr_code_0')
   },
-  /** 目录 */
-  catalogue: {
-    eventid: '',
-    eventtype: '',
-    eventvalue: mixExtra('undefined')
-  },
-  /** 配置字体缩小 */
-  configFontS: {
-    eventid: '',
-    eventtype: '',
-    eventvalue: mixExtra('undefined')
-  },
-  /** 配置字体放大 */
-  configFontL: {
-    eventid: '',
-    eventtype: '',
-    eventvalue: mixExtra('undefined')
-  },
-  /** 配置左右翻页 */
-  configH: {
-    eventid: '',
-    eventtype: '',
-    eventvalue: mixExtra('undefined')
-  },
-  /** 配置上下翻页 */
-  configV: {
-    eventid: '',
-    eventtype: '',
-    eventvalue: mixExtra('undefined')
-  },
-  /** 配置背景 */
-  configBg: {
-    eventid: '',
-    eventtype: '',
-    eventvalue: mixExtra('undefined')
-  }
+  // /** 目录 */
+  // catalogue: {
+  //   eventid: '',
+  //   eventtype: '',
+  //   eventvalue: mixExtra('undefined')
+  // },
+  // /** 配置字体缩小 */
+  // configFontS: {
+  //   eventid: '',
+  //   eventtype: '',
+  //   eventvalue: mixExtra('undefined')
+  // },
+  // /** 配置字体放大 */
+  // configFontL: {
+  //   eventid: '',
+  //   eventtype: '',
+  //   eventvalue: mixExtra('undefined')
+  // },
+  // /** 配置左右翻页 */
+  // configH: {
+  //   eventid: '',
+  //   eventtype: '',
+  //   eventvalue: mixExtra('undefined')
+  // },
+  // /** 配置上下翻页 */
+  // configV: {
+  //   eventid: '',
+  //   eventtype: '',
+  //   eventvalue: mixExtra('undefined')
+  // },
+  // /** 配置背景 */
+  // configBg: {
+  //   eventid: '',
+  //   eventtype: '',
+  //   eventvalue: mixExtra('undefined')
+  // }
 }

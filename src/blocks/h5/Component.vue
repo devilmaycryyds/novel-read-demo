@@ -273,9 +273,9 @@ export default {
       let params = {
         url: path
       };
-      if (this.schema.novelId) {
-        params.novel_id = this.schema.novelId;
-      }
+      // if (this.schema.novelId) {
+      //   params.novel_id = this.schema.novelId;
+      // }
       this.$http.post(`${baseUrl}/business/novel-content`, params).then(res => {
         let data = res.data || {};
         if (data.code === 0 && data.data) {
@@ -307,7 +307,7 @@ export default {
       this.chapterList = novelData.list;
       this.catalogueList = novelData.title;
     },
-    setEventId() {
+    async setEventId() {
       if (this.schema.event) {
         Object.keys(chekaReport).forEach(key => {
           chekaReport[key].eventid = this.schema.event[key];
@@ -315,17 +315,32 @@ export default {
       } else {
         if (this.getUrlParams('_id')) return;
         this.schema.event = {};
-        Object.keys(chekaReport).forEach(key => {
-          this.$http.get(`${baseUrl}/common/event-id`).then(res => {
-            let data = res.data || {};
-            if (data.code === 0 && data.data) {
-              this.schema.event[key] = chekaReport[key].eventid = data.data;
-            }
-          }).catch(() => {
-
-          })
+        let eventLen = Object.keys(chekaReport).length;
+        let idArr = [];
+        while (idArr.length < eventLen) {
+          let id = await this.getEventId();
+          if (id) {
+            idArr.push(id);
+          }
+        }
+        Object.keys(chekaReport).forEach((key, index) => {
+          this.schema.event[key] = chekaReport[key].eventid = idArr[index];
         })
       }
+    },
+    async getEventId() {
+      return new Promise((resolve) => {
+        this.$http.get(`${baseUrl}/common/event-id`).then(res => {
+          let data = res.data || {};
+          if (data.code === 0 && data.data) {
+            resolve(data.data)
+          } else {
+            resolve(false)
+          }
+        }).catch(() => {
+          resolve(false)
+        })
+      })
     },
     getUrlParams(name) {
       let matchStr = location.search.match(new RegExp(`${name}=([^&$]*)`));
