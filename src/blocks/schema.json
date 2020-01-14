@@ -22,7 +22,7 @@
     },
     "avator": {
       "type": "Image",
-      "name": "图标显示",
+      "name": "头像显示",
       "value": "",
       "canDelete": true
     },
@@ -40,6 +40,16 @@
       "type": "Boolean",
       "name": "是否吸顶展示微信",
       "value": false
+    },
+    "popTitle": {
+      "type": "String",
+      "name": "关注弹框标题编辑",
+      "value": "复制成功"
+    },
+    "popDesc": {
+      "type": "RichText",
+      "name": "关注弹框内容编辑",
+      "value": "微信号复制成功，是否立即跳转至微信并搜索该微信号？"
     }
   }
 }

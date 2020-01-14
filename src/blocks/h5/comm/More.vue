@@ -11,8 +11,8 @@
     </div>
     <div class="popup" @touchstart="stopHandler" @mousedown="stopHandler" @touchend="stopHandler" @mouseup="stopHandler" v-if="showPop">
       <div class="popup-box">
-        <div class="popup-header">{{errorMsg ? '提示' : '复制成功'}}</div>
-        <p>{{errorMsg || '微信号复制成功，是否立即跳转至微信并搜索该微信号？'}}</p>
+        <div class="popup-header">{{errorMsg ? '提示' : data.popTitle.value}}</div>
+        <p v-html="errorMsg || data.popDesc.value"></p>
         <div class="popup-btn">
           <span v-if="errorMsg" class="popup-btn-cancel blue" @mousedown="showPop = false;" @touchstart="showPop = false;">确定</span>
           <span v-else class="popup-btn-cancel" @mousedown="cancelWx" @touchstart="cancelWx">取消</span>
